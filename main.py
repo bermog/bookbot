@@ -1,22 +1,27 @@
 #!/usr/bin/env python3
 
+from glob import glob
+
 
 def main():
     books_dir = "books"
-    book_name = "frankenstein"
-    final_report = get_report(f"{books_dir}/{book_name}.txt")
+    book_list = glob(f"{books_dir}/*.txt")
+    final_report = get_report(book_list)
     print_report(final_report)
 
 
-def get_report(book):
-    with open(book) as b:
-        text = b.read()
-        analysis = {
-            "name": book,
-            "word_count": get_word_count(text),
-            "letter_count": get_letter_count(text.lower()),
-        }
-        return analysis
+def get_report(books):
+    report = []
+    for book in books:
+        with open(book) as b:
+            text = b.read()
+            analysis = {
+                "name": book,
+                "word_count": get_word_count(text),
+                "letter_count": get_letter_count(text.lower()),
+            }
+            report.append(analysis)
+    return report
 
 
 def get_word_count(content):
@@ -35,11 +40,12 @@ def get_letter_count(content):
 
 
 def print_report(report):
-    print(f"--- START - {report["name"]} ---")
-    print(f"A total of {report["word_count"]} words found in the document.\n")
-    for letter in report["letter_count"]:
-        print(f"- '{letter}' found {report["letter_count"][letter]} times.")
-    print(f"--- END - {report["name"]} ---\n\n")
+    for book in report:
+        print(f"--- START - {book["name"]} ---")
+        print(f"A total of {book["word_count"]} words found in the document.\n")
+        for letter in book["letter_count"]:
+            print(f"- '{letter}' found {book["letter_count"][letter]} times.")
+        print(f"--- END - {book["name"]} ---\n\n")
 
 
 main()
